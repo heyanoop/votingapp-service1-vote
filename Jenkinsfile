@@ -44,7 +44,7 @@ pipeline {
 
 
         stage("test"){
-            step{
+            steps{
                 sh "cat k8s-specifications/vote-deployment.yaml"
             }
         }
