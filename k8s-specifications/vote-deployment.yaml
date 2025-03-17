@@ -15,7 +15,7 @@ spec:
         app: vote
     spec:
       containers:
-      - image: heyanoop/examplevotingapp_vote
+      - image: heyanoop/voteapp
         name: vote
         ports:
         - containerPort: 80
