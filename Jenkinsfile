@@ -41,6 +41,13 @@ pipeline {
                 sh "sed -i 's|image: heyanoop/voteapp:.*|image: ${DOCKER_IMAGE}|' k8s-specifications/vote-deployment.yaml"
             }
         }
+
+
+        stage("test"){
+            step{
+                sh "cat k8s-specifications/vote-deployment.yaml"
+            }
+        }
  
         // stage('Deploy to Cluster') {
             // steps {
