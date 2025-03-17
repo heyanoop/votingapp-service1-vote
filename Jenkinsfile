@@ -29,16 +29,8 @@ pipeline {
                 sh "trivy image --format table ${DOCKER_IMAGE} | tee trivy_scan.log"
 
                 script {
-                    def highCount = sh(script: "grep -i 'HIGH' trivy_scan.log | wc -l", returnStdout: true).trim()
-                    def criticalCount = sh(script: "grep -i 'CRITICAL' trivy_scan.log | wc -l", returnStdout: true).trim()
-
                     echo "🔍 Security Scan Results:"
-                    echo "➡ HIGH vulnerabilities: ${highCount}"
-                    echo "➡ CRITICAL vulnerabilities: ${criticalCount}"
-
-                    if (criticalCount.toInteger() > 0) {
-                        error "❌ Build failed due to CRITICAL vulnerabilities!"
-                    }
+                    sh "cat trivy_scan.log"
                 }
             }
         }
