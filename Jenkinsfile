@@ -1,9 +1,7 @@
 pipeline {
     agent any
     environment {
-        VENV_DIR = "venv"
         DOCKER_IMAGE = "heyanoop/voteapp:${BUILD_NUMBER}"
-        DOCKER_PASS = credentials('dockerhub-password')
     }
 
     stages {
@@ -11,7 +9,6 @@ pipeline {
             steps {
                 git branch: 'main', url: 'https://github.com/heyanoop/votingapp-service1-vote.git'
             }
-        }
         }
 
         stage('Build and Push Docker Image') {
@@ -31,18 +28,22 @@ pipeline {
                 sh "trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE}"
                 sh "trivy image --format table ${DOCKER_IMAGE} | tee trivy_scan.log"
 
-                def highCount = sh(script: "grep -i 'HIGH' trivy_scan.log | wc -l", returnStdout: true).trim()
-                def criticalCount = sh(script: "grep -i 'CRITICAL' trivy_scan.log | wc -l", returnStdout: true).trim()
+                script {
+                    def highCount = sh(script: "grep -i 'HIGH' trivy_scan.log | wc -l", returnStdout: true).trim()
+                    def criticalCount = sh(script: "grep -i 'CRITICAL' trivy_scan.log | wc -l", returnStdout: true).trim()
 
-                echo "🔍 Security Scan Results:"
-                echo "➡ HIGH vulnerabilities: ${highCount}"
-                echo "➡ CRITICAL vulnerabilities: ${criticalCount}"
+                    echo "🔍 Security Scan Results:"
+                    echo "➡ HIGH vulnerabilities: ${highCount}"
+                    echo "➡ CRITICAL vulnerabilities: ${criticalCount}"
 
-                if (criticalCount.toInteger() > 0) {
-                    error "❌ Build failed due to CRITICAL vulnerabilities!"
-                 }
+                    if (criticalCount.toInteger() > 0) {
+                        error "❌ Build failed due to CRITICAL vulnerabilities!"
+                    }
+                }
+            }
         }
 
+        // Uncomment the following stages if needed
         // stage('Update Manifest') {
         //     steps {
         //         sh "sed -i 's|image: heyanoop/flask-app:.*|image: ${DOCKER_IMAGE}|' k8s-specifications/vote-deployment.yaml"
@@ -54,6 +55,5 @@ pipeline {
         //         sh "kubectl apply -f k8s-specifications/vote-deployment.yaml"
         //     }
         // }
-
     }
 }
