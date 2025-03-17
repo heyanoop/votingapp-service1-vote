@@ -43,17 +43,17 @@ pipeline {
             }
         }
 
-        // Uncomment the following stages if needed
-        // stage('Update Manifest') {
-        //     steps {
-        //         sh "sed -i 's|image: heyanoop/flask-app:.*|image: ${DOCKER_IMAGE}|' k8s-specifications/vote-deployment.yaml"
-        //     }
-        // }
-
+      
+        stage('Update Manifest') {
+            steps {
+                sh "sed -i 's|image: heyanoop/flask-app:.*|image: ${DOCKER_IMAGE}|' k8s-specifications/vote-deployment.yaml"
+            }
+        }
+ 
         // stage('Deploy to Cluster') {
-        //     steps {
-        //         sh "kubectl apply -f k8s-specifications/vote-deployment.yaml"
-        //     }
+            // steps {
+                // sh "kubectl apply -f k8s-specifications/vote-deployment.yaml"
+            // }
         // }
     }
 }
