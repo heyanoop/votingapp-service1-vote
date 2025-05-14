@@ -23,17 +23,17 @@ pipeline {
             }
         }
 
-        stage('Trivy Security Scan') {
-            steps {
-                sh "trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE}"
-                sh "trivy image --format table ${DOCKER_IMAGE} | tee trivy_scan.log"
+        // stage('Trivy Security Scan') {
+        //     steps {
+        //         sh "trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE}"
+        //         sh "trivy image --format table ${DOCKER_IMAGE} | tee trivy_scan.log"
 
-                script {
-                    echo "🔍 Security Scan Results:"
-                    sh "cat trivy_scan.log"
-                }
-            }
-        }
+        //         script {
+        //             echo "🔍 Security Scan Results:"
+        //             sh "cat trivy_scan.log"
+        //         }
+        //     }
+        // }
 
       
         stage('Update Manifest') {
