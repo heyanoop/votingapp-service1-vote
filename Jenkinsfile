@@ -14,10 +14,15 @@ pipeline {
         stage('SonarQube Scan') {
             steps {
                 withSonarQubeEnv('sonar-server') {
-                sh 'sonar-scanner -Dsonar.projectKey=votingapp-service1-vote -Dsonar.sources=. -Dsonar.python.version=3'
+                sh """
+                    ${tool 'sonar-scanner'}/bin/sonar-scanner \
+                    -Dsonar.projectKey=votingapp-service1-vote \
+                    -Dsonar.sources=. \
+                    -Dsonar.python.version=3
+                """
+            }
+            }
         }
-    }
-}
 
 
         stage('Build and Push Docker Image') {
