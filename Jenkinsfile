@@ -26,6 +26,21 @@ pipeline {
         }
 
 
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline failed due to SonarQube Quality Gate status: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+        
+
+
         stage('Build and Push Docker Image') {
             steps {
                 withCredentials([string(credentialsId: 'dockerhub-password', variable: 'DOCKER_PASS')]) {
