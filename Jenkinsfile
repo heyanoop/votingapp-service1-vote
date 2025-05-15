@@ -11,6 +11,15 @@ pipeline {
             }
         }
 
+        stage('SonarQube Scan') {
+            steps {
+                withSonarQubeEnv('sonar-server') {
+                sh 'sonar-scanner -Dsonar.projectKey=votingapp-service1-vote -Dsonar.sources=. -Dsonar.python.version=3'
+        }
+    }
+}
+
+
         stage('Build and Push Docker Image') {
             steps {
                 withCredentials([string(credentialsId: 'dockerhub-password', variable: 'DOCKER_PASS')]) {
@@ -22,18 +31,6 @@ pipeline {
                 }
             }
         }
-
-        // stage('Trivy Security Scan') {
-        //     steps {
-        //         sh "trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE}"
-        //         sh "trivy image --format table ${DOCKER_IMAGE} | tee trivy_scan.log"
-
-        //         script {
-        //             echo "🔍 Security Scan Results:"
-        //             sh "cat trivy_scan.log"
-        //         }
-        //     }
-        // }
 
       
         stage('Update Manifest') {
