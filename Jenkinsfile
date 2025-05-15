@@ -18,8 +18,9 @@ pipeline {
                     ${tool 'sonar-scanner'}/bin/sonar-scanner \
                     -Dsonar.projectKey=votingapp-service1-vote \
                     -Dsonar.sources=. \
+                    -Dsonar.inclusions=**/*.py,**/*.html,**/*.css \
                     -Dsonar.python.version=3
-                """
+                    """
             }
             }
         }
